@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id        String     @id @default(cuid())
+  name      String
+  email     String     @unique
+  password  String
+  Sessions  Sessions[]
+  balance   Float      @default(0)
+  sentTransactions     Transaction[] @relation("FromUser")
+  receivedTransactions Transaction[] @relation("ToUser")
+
+}
+
+model Sessions {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String
+  expiresAt DateTime
+  valid     Boolean
+  createdAt DateTime @default(now())
+  Account      Account     @relation(fields: [userId], references: [id])
+}
+
+
+model Transaction {
+  id            String   @id @default(cuid())
+  fromUserId    String
+  toUserId      String
+  amount        Float
+  createdAt     DateTime @default(now())
+  reversed      Boolean  @default(false)
+  fromUser      Account     @relation("FromUser", fields: [fromUserId], references: [id])
+  toUser        Account     @relation("ToUser", fields: [toUserId], references: [id])
+}
