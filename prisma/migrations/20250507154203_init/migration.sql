@@ -23,6 +23,7 @@ CREATE TABLE "Transaction" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "fromUserId" TEXT NOT NULL,
     "toUserId" TEXT NOT NULL,
+    "toUserName" TEXT NOT NULL,
     "amount" REAL NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "reversed" BOOLEAN NOT NULL DEFAULT false,

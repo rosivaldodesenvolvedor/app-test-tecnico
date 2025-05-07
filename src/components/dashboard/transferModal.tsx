@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 interface TransferModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ export default function TransferModal({
 }: TransferModalProps) {
   const [email, setEmail] = useState("");
   const [amount, setAmount] = useState<number>(0);
+  const [formError, setFormError] = useState("");
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -25,8 +27,17 @@ export default function TransferModal({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [onClose]);
 
-  const handleSubmit = () => {
-    if (!email || amount <= 0) return;
+  useEffect(() => {
+    setFormError("");
+}, [email, amount]);
+
+ const handleSubmit = async  () => {
+
+    const response = await axios.get(`/api/account?email=${email}`);
+
+    if (!response.data) { setFormError("Account not found."); return; }
+    if (amount <= 0 ) { setFormError("Transfer of amounts less than or equal to zero is not permitted."); return; }
+
     onTransfer(email, amount);
     setEmail("");
     setAmount(0);
@@ -46,7 +57,9 @@ export default function TransferModal({
         </button>
         <h2 className="text-lg font-bold mb-4">Fazer Transferência</h2>
 
-        <label className="block mb-1 font-medium">E-mail do destinatário:</label>
+        <label className="block mb-1 font-medium">
+          E-mail do destinatário:
+        </label>
         <input
           type="email"
           value={email}
@@ -63,6 +76,13 @@ export default function TransferModal({
           onChange={(e) => setAmount(parseFloat(e.target.value))}
           className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-500"
         />
+
+        {formError && (
+          <div className="text-amber-600 mb-4">
+            <p className="text-sm font-semibold">Erro no formulário</p>
+            <p>{formError}</p>
+          </div>
+        )}
 
         <button
           onClick={handleSubmit}

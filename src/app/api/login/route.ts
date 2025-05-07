@@ -26,34 +26,43 @@ export async function GET(request: NextRequest) {
     where: { token: sessionToken },
   });
 
-  const sessionExpired = !session || !session.valid || session.expiresAt < new Date();
+  const sessionExpired =
+    !session || !session.valid || session.expiresAt < new Date();
 
   if (sessionExpired) {
-    return NextResponse.json({ error: "Invalid or expired session" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Invalid or expired session" },
+      { status: 401 }
+    );
   }
 
   return NextResponse.json({}, { status: 200 });
 }
 
-/**
- * Realiza o login do usuário, cria uma sessão e define cookie.
- */
 export async function POST(request: Request) {
   const prisma = PrismaGetInstance();
 
   const { email, password }: LoginProps = await request.json();
 
   if (!email || !password) {
-    return NextResponse.json<LoginResponse>({ session: "Invalid input" }, { status: 400 });
+    return NextResponse.json<LoginResponse>(
+      { session: "Invalid input" },
+      { status: 400 }
+    );
   }
 
   try {
-    const account = await prisma.account.findUniqueOrThrow({ where: { email } });
+    const account = await prisma.account.findUniqueOrThrow({
+      where: { email },
+    });
 
     const passwordMatch = bcrypt.compareSync(password, account.password);
 
     if (!passwordMatch) {
-      return NextResponse.json<LoginResponse>({ session: "Invalid data" }, { status: 400 });
+      return NextResponse.json<LoginResponse>(
+        { session: "Invalid data" },
+        { status: 400 }
+      );
     }
 
     const sessionToken = GenerateSession({
@@ -80,7 +89,10 @@ export async function POST(request: Request) {
       path: "/",
     });
 
-    return NextResponse.json<LoginResponse>({ session: sessionToken }, { status: 200 });
+    return NextResponse.json<LoginResponse>(
+      { session: sessionToken },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("LOGIN ERROR:", error);
     return NextResponse.json<LoginResponse>({ session: "" }, { status: 400 });

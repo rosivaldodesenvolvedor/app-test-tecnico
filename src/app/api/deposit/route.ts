@@ -12,7 +12,10 @@ export async function PUT(request: Request) {
   const { balance }: UpdateUserProps = await request.json();
 
   if (typeof balance !== "number" || balance <= 0) {
-    return NextResponse.json({ error: "Invalid balance input" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid balance input" },
+      { status: 400 }
+    );
   }
 
   const user = await getUserFromSession();
@@ -21,7 +24,10 @@ export async function PUT(request: Request) {
   const currentBalance = user?.balance ?? 0;
 
   if (!currentEmail) {
-    return NextResponse.json({ error: "User not authenticated" }, { status: 401 });
+    return NextResponse.json(
+      { error: "User not authenticated" },
+      { status: 401 }
+    );
   }
 
   try {
@@ -32,8 +38,8 @@ export async function PUT(request: Request) {
 
     return NextResponse.json(
       { description: "Transaction completed successfully" },
-      { status: 200 });
-
+      { status: 200 }
+    );
   } catch (error) {
     console.error("UPDATE ERROR:", error);
     return NextResponse.json(

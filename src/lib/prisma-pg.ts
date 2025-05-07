@@ -1,4 +1,3 @@
-
 import { PrismaClient } from "@prisma/client";
 
 export function PrismaGetInstance(): PrismaClient {
@@ -6,4 +5,3 @@ export function PrismaGetInstance(): PrismaClient {
 
   return prisma;
 }
-

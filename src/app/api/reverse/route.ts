@@ -16,21 +16,30 @@ export async function POST(request: Request) {
   });
 
   if (!transaction || transaction.reversed) {
-    return NextResponse.json({ error: "Invalid or already reversed" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid or already reversed" },
+      { status: 400 }
+    );
   }
 
   if (transaction.fromUserId !== user?.id) {
     return NextResponse.json({ error: "Not authorized" }, { status: 403 });
   }
 
-  const fromUser = await prisma.account.findUnique({ where: { id: transaction.fromUserId } });
-  const toUser = await prisma.account.findUnique({ where: { id: transaction.toUserId } });
+  const fromUser = await prisma.account.findUnique({
+    where: { id: transaction.fromUserId },
+  });
+  const toUser = await prisma.account.findUnique({
+    where: { id: transaction.toUserId },
+  });
 
   if (!fromUser || !toUser || toUser.balance < transaction.amount) {
-    return NextResponse.json({ error: "Cannot reverse transaction" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Cannot reverse transaction" },
+      { status: 400 }
+    );
   }
 
-  // Realiza a reversão
   await prisma.$transaction([
     prisma.account.update({
       where: { id: fromUser.id },

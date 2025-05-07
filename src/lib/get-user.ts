@@ -21,11 +21,11 @@ export async function getUserFromSession() {
   return account;
 }
 
-export async function getUser( email: String ) {
-    const prisma = PrismaGetInstance();
-    const account = await prisma.account.findFirst({
-      where: { email },
-    });
-  
-    return account;
-  }
+export async function getUser(email: String) {
+  const prisma = PrismaGetInstance();
+  const account = await prisma.account.findFirst({
+    where: { email },
+  });
+
+  return account;
+}

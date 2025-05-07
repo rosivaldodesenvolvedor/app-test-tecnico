@@ -24,22 +24,28 @@ export async function PUT(request: Request) {
   const destinationBalance = destinationUser?.balance ?? 0;
 
   if (!originEmail) {
-    return NextResponse.json({ error: "Origin user not found" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Origin user not found" },
+      { status: 400 }
+    );
   }
 
   if (originBalance < balance) {
-    return NextResponse.json({ error: "Insufficient balance" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Insufficient balance" },
+      { status: 400 }
+    );
   }
 
   try {
     // Atualiza o saldo do remetente
-    const originUser =  await prisma.account.update({
+    const originUser = await prisma.account.update({
       where: { email: originEmail },
       data: { balance: originBalance - balance },
     });
 
     // Atualiza o saldo do destinatário
-      const destinationUser = await prisma.account.update({
+    const destinationUser = await prisma.account.update({
       where: { email: destinationEmail },
       data: { balance: destinationBalance + balance },
     });
@@ -48,6 +54,7 @@ export async function PUT(request: Request) {
       data: {
         fromUserId: originUser.id,
         toUserId: destinationUser.id,
+        toUserName: destinationUser.name,
         amount: balance,
       },
     });

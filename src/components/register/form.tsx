@@ -19,7 +19,6 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useCallback, useRef, useState } from "react";
 
 export function RegisterForm() {
-
   const router = useRouter();
 
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -30,7 +29,6 @@ export function RegisterForm() {
   const [formError, setFormError] = useState("");
   const [formLoading, setFormLoading] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
-
 
   const handleRegisterSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
@@ -94,9 +92,7 @@ export function RegisterForm() {
               ?.data as RegisterResponse;
 
             if (errorMessage === "user already exists") {
-              setFormError(
-                "This email is already registered. Try logging in."
-              );
+              setFormError("This email is already registered. Try logging in.");
             } else {
               setFormError(errorMessage || error.message);
             }
@@ -119,7 +115,7 @@ export function RegisterForm() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-        <div className="grid gap-2">
+          <div className="grid gap-2">
             <Label htmlFor="nome">Nome</Label>
             <Input
               ref={nameInputRef}

@@ -6,6 +6,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import DepositModal from "./depositCard";
 import TransferModal from "./transferModal";
 import TransactionList from "../transactionList/transactionList";
+import LogoutButton from "./logoutButton";
 
 
 export function Dashboard() {
@@ -44,10 +45,13 @@ export function Dashboard() {
     return (
         <div className="h-[100vh] bg-gradient-to-br from-blue-100 to-blue-300 flex p-4">
             <div className="bg-white shadow-xl rounded-2xl p-8  w-full">
-                <h1 className="text-2xl font-semibold text-gray-800 mb-2">
-                    Olá, {name}
-                </h1>
-                <p className="text-gray-500 mb-6">Bem-vindo de volta ao seu banco.</p>
+                <div className="relative bg-white p-6 rounded">
+                        <h1 className="text-2xl font-semibold text-gray-800 mb-2">
+                            Olá, {name}
+                        </h1>
+                        <p className="text-gray-500 mb-6">Bem-vindo de volta ao seu banco.</p>
+                    <LogoutButton>Logout</LogoutButton>
+                </div>
 
                 <div className="bg-blue-600 text-white p-6 rounded-xl shadow-md">
                     <p className="text-lg">Seu saldo atual é:</p>

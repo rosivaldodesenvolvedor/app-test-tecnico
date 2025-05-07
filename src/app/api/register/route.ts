@@ -19,10 +19,12 @@ export interface RegisterResponse {
   user?: Account;
 }
 
-const EMAIL_REGEX = /^[\w!#$%&'*+/=?^`{|}~-]+(?:\.[\w!#$%&'*+/=?^`{|}~-]+)*@(?:[\w-]+\.)+[a-zA-Z]{2,7}$/;
+const EMAIL_REGEX =
+  /^[\w!#$%&'*+/=?^`{|}~-]+(?:\.[\w!#$%&'*+/=?^`{|}~-]+)*@(?:[\w-]+\.)+[a-zA-Z]{2,7}$/;
 
 export async function POST(request: Request) {
-  const { name, email, password, password2 }: RegisterProps = await request.json();
+  const { name, email, password, password2 }: RegisterProps =
+    await request.json();
 
   const validationError = validateInput(email, password, password2);
   if (validationError) {
@@ -62,13 +64,15 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ account }, { status: 200 });
-
   } catch (error) {
     if (
       error instanceof PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
-      return NextResponse.json({ error: "user already exists" }, { status: 400 });
+      return NextResponse.json(
+        { error: "user already exists" },
+        { status: 400 }
+      );
     }
 
     console.error("REGISTER ERROR:", error);
@@ -76,7 +80,11 @@ export async function POST(request: Request) {
   }
 }
 
-function validateInput(email: string, password: string, password2: string): string | null {
+function validateInput(
+  email: string,
+  password: string,
+  password2: string
+): string | null {
   if (!email || !password || !password2) {
     return "missing required fields";
   }

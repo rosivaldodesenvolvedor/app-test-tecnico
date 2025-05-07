@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 interface Transaction {
@@ -24,36 +24,24 @@ interface Props {
 
 export default function TransactionList({ onRevert }: Props) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [account, setAccount] = useState<Account>();
 
   const fetchTransactions = async () => {
-    const response = await axios.get("/api/transactions");
+    const response = await axios.get(`/api/transactions`);
     setTransactions(response.data);
   };
 
   const handleRevert = async (id: string) => {
     await axios.post(`/api/reverse`, {
-      transactionId: id
+      transactionId: id,
     });
     fetchTransactions();
     onRevert();
   };
 
-  async function findAccounts() {
-    const { data } = await axios.get(`/api/account`);
-    setAccounts(data);
-  };
-
   useEffect(() => {
-    findAccounts();
     fetchTransactions();
   }, [onRevert]);
-
-
-  const findName = (id: string) => {
-    const result = accounts.find(res => res.id === id);
-    return result?.name;
-  }
 
   return (
     <div className="mt-10 bg-white p-6 rounded-xl shadow-md">
@@ -75,15 +63,16 @@ export default function TransactionList({ onRevert }: Props) {
                 <td className="py-2 text-blue-700 font-medium">
                   R$ {transaction.amount.toFixed(2)}
                 </td>
-                <td className="py-2">{findName(transaction.toUserId)}</td>
+                <td className="py-2">{transaction.toUserName}</td>
                 <td className="py-2">
                   <button
                     onClick={() => handleRevert(transaction.id)}
                     disabled={transaction.reversed}
-                    className={`px-3 py-1 text-white rounded-lg ${transaction.reversed
+                    className={`px-3 py-1 text-white rounded-lg ${
+                      transaction.reversed
                         ? "bg-gray-400 cursor-not-allowed"
                         : "bg-yellow-500 hover:bg-yellow-600"
-                      }`}
+                    }`}
                   >
                     {transaction.reversed ? "Revertida" : "Reverter"}
                   </button>
